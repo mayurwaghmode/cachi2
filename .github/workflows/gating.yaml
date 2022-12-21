@@ -110,12 +110,10 @@ jobs:
         with:
           fetch-depth: 0
 
-<<<<<<< HEAD
       - name: Install required packages
         run: |
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
-=======
 
       - name: Build Cachi2 image
         uses: redhat-actions/buildah-build@v2

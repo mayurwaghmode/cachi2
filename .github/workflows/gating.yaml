@@ -116,16 +116,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
 =======
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
->>>>>>> 37c3960 (Added ppc64le support)
 
       - name: Build Cachi2 image
         uses: redhat-actions/buildah-build@v2
         with:
           image: cachi2
           tags: ${{ github.sha }}
-          platforms: linux/amd64,linux/ppc64le
+          arch: amd64
           containerfiles: |
             ./Containerfile
 
@@ -149,20 +146,3 @@ jobs:
           CACHI2_IMAGE: localhost/cachi2:${{ github.sha }}
         run: |
            tox -e integration
-
-     # Authenticate to container image registry to push the image
-      - name: Podman Login
-        uses: redhat-actions/podman-login@v1
-        if: github.ref == 'refs/heads/main'
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USER }}
-          password: ${{ secrets.QUAY_PWD }}
-
-      - name: Push image to Quay.io registry
-        if: github.ref == 'refs/heads/main'
-        run: |
-          podman manifest push cachi2:${{ github.sha }} \
-            quay.io/containerbuildsystem/cachi2:${{ github.sha }}
-          podman manifest push cachi2:${{ github.sha }} \
-            quay.io/containerbuildsystem/cachi2:latest
